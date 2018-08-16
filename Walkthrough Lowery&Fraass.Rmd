@@ -1,9 +1,10 @@
 ---
-title: "Entire Range Test Complexity"
+title: "K/Pg Range Test Complexity (Publication version)"
 author: "Fraass"
 date: "7/4/2018"
 output:
   pdf_document: default
+  word_document: default
   html_document:
     keep_md: yes
 ---
@@ -851,10 +852,10 @@ rm(genus.working)
 
 ```
 
-Several code-chunks below execute custom functions not displayed in this brief walkthrough of the calculations. All that code and the .r file used to generate this file avaliable on github.com/Fraass/Test-Complexity. 
+All the code to generate this analysis can be found at github.com/Fraass/Test-Complexity. 
 
 ## Initial Dataset
-```{r diversity w diff timescales, echo=TRUE}
+```{r diversity w diff timescales, echo=FALSE}
 plot(0,0,
      type='n',
      xlim=c(170,0),
@@ -887,12 +888,12 @@ lines(time.div(1:length(family.dataframe$genus),
       col=div.pallet[3])
 lines(midstage,occurtot.family,col="black",lwd=2)
 ```
-The difference between the 0.25 myr binned and zone scheme binned are pretty stark. In most timeperiods the zonal scheme inflates the number of individuals. That's not surprising. There are a few times that isn't the case, the later part of the Cretaceous, the Danian, the latter stages of the Paleogene, and the later portion of the Miocene. This is much less the case for the genus, which appears much more stable. While this seems obvious, it's an important difference, and suggests that binning schemes are much more important in the lower taxonomic levels. 
+Fraass et al., 2015 uses a foram biozone binning scheme, while this publication uses a 0.25 myr scheme. The difference between those schemes are stark. In most timeperiods the zonal scheme unsurprisingly inflates the number of individuals. There are a few times that isn't the case, the later part of the Cretaceous, the Danian, the latter stages of the Paleogene, and the later portion of the Miocene. This is much less the case for the genus, which appears much more stable. While this seems obvious, it's an important difference, and demonstrates that binning schemes are much more important in the lower taxonomic levels. 
 
-A case certainly should be made that there are instances (the Danian here, for example) where the additional resolution is useful because of the increased amount of work devoted to understanding the recovery. Where doing a longer record however, the zone scheme is appropriate.
+There are instances (the Danian here, for example) where the additional resolution is useful because of the increased amount of work devoted to understanding the recovery (e.g., Hull and Norris, 2011; Lowery et al., 2018). With a longer record however, the zone scheme is appropriate.
 
 ```{r morphology}
-### This is the full list of characters and the 
+### This is the full list of characters for the analysis (inc) and the list for the pca (inc2)
 inc<-c(#"w",
   #"mtheta",
   #"lw",
@@ -948,9 +949,9 @@ inc2<-c(#"w",
 pairs(morph[,inc],pch=16,cex=.4)  
 ```
 
-Plot of the included morphometric parameters. `inc` is the set of morphological parameters used to for this study, while `inc2` is the complete dataset. In `inc2` several parameters are `#`'d out, those are used in calculations of other parameters. I use it for the PCA, along with `inc`.
+Plot of the included morphometric parameters. `inc` is the set of morphological parameters used to for this study, while `inc2` is the complete dataset. In `inc2` several parameters are `#`'d out, those are used in calculations of other parameters. I use it for the PCA, along with `inc`. Limited covariation for `inc` traits is seen, suggesting that many of these traits are somewhat unrelated to one another. That is not the case with `inc2`, the complete set, as seen below.
 
-```{r PCA}
+```{r PCA, echo=FALSE}
 foram.dataframe->morph
 exclude<-c(4) #this is the only set of measurements that is incomplete.
 morph[1:length(morph[,1]) %w/o% exclude,]->morph
@@ -960,9 +961,9 @@ princomp(pca.in)->res.pca
 plot(res.pca)
  res.pca$sdev^2/sum(res.pca$sdev^2)->PoV
 ```
-Results of the Principle Components Analysis (PCA). First, second, and third axes contain ~`r round(sum(PoV[1:3]),4)*100`% of the variance. 
+Results of the Principle Components Analysis (PCA) performed on just the `inc` parameters. First, second, and third axes contain ~`r round(sum(PoV[1:3]),4)*100`% of the variance. 
 
-```{r PCA2}
+```{r PCA2, echo=FALSE}
 foram.dataframe->morph
 exclude<-c(4)
 morph[1:length(morph[,1]) %w/o% exclude,]->morph
@@ -972,17 +973,17 @@ princomp(pca.in)->res.pca2
 plot(res.pca2)
  res.pca2$sdev^2/sum(res.pca2$sdev^2)->PoV2
 ```
-Results of a second Principle Components Analysis (PCA) which includes all morphometric parameters. First, second, and third axes contain ~`r round(sum(PoV2[1:3]),4)*100`% of the variance. 
+Results of a second Principle Components Analysis (PCA) including nearly all morphometric parameters. First, second, and third axes contain ~`r round(sum(PoV2[1:3]),4)*100`% of the variance. 
 
-```{r biplot2}
+```{r biplot2, echo=FALSE}
 biplot(res.pca2)
 ```
-So, including targeted set lets us look at fewer components, with higher variance explained. The number of chamber parameters seem to dominate the first axis in the second kitchen-sink approach. That makes sense, since the number of chambers in the final whorl is dependent on the interchamber angle, which is then summarized by mtheta. So, mtheta, ic1:5 are all covarying, while number of chamber is placed at the other side. Thus, multiple parameters are explaining the same property, and thus the 'kitchen-sink' approach is obviously fundamentally flawed. Axis two is size, (theres also some minor loading of size on A1). Essentially in the 'kitchen-sink' approach the analysis picks out big keeled things (ie., *Globorotalids*) v. others.
+The `inc`, more targeted set of parameters lets us look at fewer components with higher variance explained. The number of chamber parameters seem to dominate the first axis in the second kitchen-sink approach. That makes sense, since the number of chambers in the final whorl is dependent on the interchamber angle, which is then summarized by mtheta. So, mtheta, ic1:5 are all covarying, while number of chamber is placed at the other side. Thus, multiple parameters are explaining the same property, and thus the 'kitchen-sink' approach is obviously fundamentally flawed. Axis two is size, (theres also some minor loading of size on A1). Essentially in the 'kitchen-sink' approach the analysis picks out big keeled things (ie., *Globorotalids*) v. others.
 
-A primary concern is the lack of differentiation on the skree-plot in the 'focused' dataset. That dataset has variance spread out through the various axes. All of our measurements were designed to discriminate between the major groups, and be highly varying. Thus, because of the nature of our measruermnets the variance should be distributed because we did that on purpose. 
+Of primary concern is the lack of differentiation on the skree-plot in the 'focused' dataset. That dataset has variance spread throughout various axes. All of our measurements were designed to discriminate between the major groups, and be highly varying. Thus, because of the nature of our measurements the variance should be distributed as we largely did that on purpose. 
 
 ## Test Complexity
-```{r making test complexity index.1}
+```{r making test complexity index.1,echo=FALSE}
 inc<-c(#"w",
   #"mtheta",
   #"lw",
@@ -1009,29 +1010,29 @@ inc<-c(#"w",
   #"double"
   #"depth"
 )
-pairs(morph[,inc],pch=16,cex=.4)  
 ```
 
 ```{r making test complexity.2}
 which(morph$species == "holmdelensis")->h
 which(morph$species == "monmouthensis")->m
-build.tci<-morph
+build.tci<-morph #morph is the dataset
 for(i in inc){
-  {morph[h,i]+morph[m,i]}/2->simple.value
-  build.tci[,i]<-morph[,i]-simple.value
+  {morph[h,i]+morph[m,i]}/2->simple.value #averaging holmdelensis and monmouthenesis together
+  build.tci[,i]<-morph[,i]-simple.value #subtracking the 'simple.value' from every species
 }
-
-```
-Generating the predefined `simple.value` to assign as our 0 for each parameter.
-```{r building test complexity index.3}
 for(i in inc){
-  abs(build.tci[,i])->build.tci[,i]#taking the absolute value
-  decostand(build.tci[,i],method='range',na.rm=TRUE)->build.tci[,i]
+  abs(build.tci[,i])->build.tci[,i] #taking the absolute value
+  decostand(build.tci[,i],method='range',na.rm=TRUE)->build.tci[,i] #applying the 'range' to make the individual scores vary from 0 (simple) to 1
 }
-test.complex.index<-NA
+test.complex.index<-NA #making the object that includes test complexity
 for(i in 1:length(build.tci$species)){
-  sum(build.tci[i,inc])->test.complex.index[i]
+  sum(build.tci[i,inc])->test.complex.index[i] #adding all the parameters together
 }
+```
+This is the code that does the bulk of the analysis in this study.
+Test complexity is calculated by subtracting the predefined simple morphologies from all parameters. The absolute value is then taken, so that lowest value is now the 'simple morphologies' and divergence on either side is an increase. 
+This is key, while several parameters are an increase in complexity (larger area is generally considered a 'more complex' trait in literature), a parameter like lobateness or clavateness are more complex in both directions. The 'simple' foraminifera has a globulose appearace, where the more complex forms are both digitate foraminifera and foraminifera with highly circular outlines. The mean, nor median, aren't the 'simple' morphology either, so this more arbitrary designation is a compromise.
+```{r making test complexity.5,echo=FALSE}
 plot(0,0,
      type='n',
      xlim=c(170,0),
@@ -1043,18 +1044,9 @@ segments(build.tci$origin,
          test.complex.index,
          build.tci$extin,
          test.complex.index)
-
-
-#highlighting significant macroevolutionary events
-which(timeresolution.dataframe$sig.origin == 'y')->sig.origin
-which(timeresolution.dataframe$sig.extin == 'y')->sig.extin
-
-
 ```
-Test complexity is calculated by subtracting the predefined simple morphologies from all parameters. The absolute value is then taken, so that lowest value is now the 'simple morphologies' and divergence on either side is an increase. 
-This is key, while several parameters are an increase in complexity (larger area is generally considered a 'more complex' trait in literature), a parameter like lobateness or clavateness are more complex in both directions. The 'simple' foraminifera has a globulose appearace, where the more complex forms are both digitate foraminifera and foraminifera with highly circular outlines. The mean, nor median, aren't the 'simple' morphology either, so this more arbitrary designation is a compromise.
-
-```{r trophic strategy}
+Plot of test complexity through time, each segment representing an individual species and its geological range.
+```{r trophic strategy,echo=FALSE}
 photo.gen<-c('Morozovella',
              'Igorina',
              'Acarinina')
@@ -1097,22 +1089,61 @@ lines(time.mean(test.complex.index[1:length(test.complex.index) %w/o% c(spin.ind
       lwd=4,
       col='purple')
 ```
-Break down of trophic levels with running means.The `time.mean` function was written specifically for this type of analysis, and is just a basic running mean that calculates based on the first and last occurances, with a assignable resolution.
+Break down of trophic levels with running means. The running mean is simply a calculation that examines the first and last occurances and score, and then averages the test complexity for each extant taxon for each interval. Trophic levels are calcuated the same way, only including those taxa within the specified trophic group. Those groups are based on the studies cited within the Methods section.
 
-
-```{r comparison with PCA}
+### Principle Components Analysis as Time Series
+```{r comparison with PCA,echo=FALSE}
 axis.of.interest<-1
+which(morph$species == "holmdelensis")->h
+which(morph$species == "monmouthensis")->m
+build.pca<-res.pca$scores[,axis.of.interest] #morph is the dataset
+
+  {build.pca[h]+build.pca[m]}/2->simple.value #averaging holmdelensis and monmouthenesis together
+  build.pca<-build.pca-simple.value #subtracking the 'simple.value' from every species
+
+  abs(build.pca)->build.pca #taking the absolute value
+
 plot(0,0,
      type='n',
      xlim=c(170,0),
      #xlim=c(80,50),
-     ylim=c(min(res.pca$scores[,axis.of.interest],na.rm=T),
-            max(res.pca$scores[,axis.of.interest],na.rm=T)+4),
+     ylim=c(min(build.pca,na.rm=T),
+            max(build.pca,na.rm=T)),
      xlab='Time (Ma)',
      ylab="Axis 1")
 segments(morph$origin,
-         res.pca$scores[,axis.of.interest],
+         build.pca,
          morph$extin,
-         res.pca$scores[,axis.of.interest])
+         build.pca)
+lines(time.mean(build.pca,
+               morph$origin,
+               morph$extin,0.25),
+      lwd=2,
+      col='black')
 ```
-This is striklingly similar to the plots of test complexity without the 'simple' values assigned or the absolute value taken. It is still possible to see roughly the same shape, and view the rough position of the mean values. There is a switch during the K/Pg where there's slightly higher values through the Cenozoic than the Cretaceous, but remember, this adds values that are complex in the positive direction to values that are complex in the negative direction. 
+The results of the PCA as a time series is striklingly similar to our produced plots of test complexity . It is still possible to see the same shape, and view the rough position of the mean values. We chose to employ our Test Complexity Index because of the relative simpilicity of its calculation, despite the slightly more robust analytical approach of the principle components analysis. It also allowed us to talk about the entire collection of disparity and not just certain aspects.
+```{r comparison with PCA2,echo=FALSE}
+axis.of.interest<-2
+which(morph$species == "holmdelensis")->h
+which(morph$species == "monmouthensis")->m
+build.pca<-res.pca$scores[,axis.of.interest] #morph is the dataset
+
+  {build.pca[h]+build.pca[m]}/2->simple.value #averaging holmdelensis and monmouthenesis together
+  build.pca<-build.pca-simple.value #subtracking the 'simple.value' from every species
+
+  abs(build.pca)->build.pca #taking the absolute value
+
+plot(0,0,
+     type='n',
+     xlim=c(170,0),
+     #xlim=c(80,50),
+     ylim=c(min(build.pca,na.rm=T),
+            max(build.pca,na.rm=T)),
+     xlab='Time (Ma)',
+     ylab="Axis 2")
+segments(morph$origin,
+         build.pca,
+         morph$extin,
+         build.pca)
+```
+Each axis, of course, only accounts for a certain aspect of the disparity within the group, and some subsequent axes appear to emphasize the outliers, rather than the bulk trend. 
